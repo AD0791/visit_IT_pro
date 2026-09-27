@@ -1,0 +1,20 @@
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Databases are rebuilt from checklists; never commit one (they can hold client data).
+*.db
+*.db-journal
+
+# Guard against turning the repository itself into a client workspace by mistake.
+/visit-it-pro.toml
+/visits/
+
+# macOS
+.DS_Store

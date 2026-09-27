@@ -1,0 +1,60 @@
+[project]
+name = "visit-it-pro"
+version = "0.1.0"
+description = "Checklist-driven IT site visits: a Markdown checklist on site, a PDF report after, every visit kept in SQLite and followed on a terminal dashboard."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "AD0791", email = "alexdisla1991@gmail.com" }
+]
+requires-python = ">=3.11"
+keywords = ["it", "maintenance", "checklist", "audit", "report", "msp", "cli", "sqlite", "dashboard"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Natural Language :: French",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Office/Business",
+]
+dependencies = [
+    "rich>=15.0.0",
+    "typer>=0.27.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/AD0791/visit_IT_pro"
+Repository = "https://github.com/AD0791/visit_IT_pro"
+Issues = "https://github.com/AD0791/visit_IT_pro/issues"
+Changelog = "https://github.com/AD0791/visit_IT_pro/blob/main/CHANGELOG.md"
+
+[project.scripts]
+visit-it-pro = "visit_it_pro.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["UP045"]  # keep Optional[...] in Typer signatures
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,123 @@
+/* Print stylesheet for the visit report (pandoc HTML → headless Chrome PDF).
+   __PIED__ is replaced by visit-it-pro with the footer text. */
+
+@page {
+  size: A4;
+  margin: 16mm 15mm 18mm 15mm;
+  @bottom-left {
+    content: "__PIED__";
+    font: 7.5pt -apple-system, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+    color: #6b7280;
+  }
+  @bottom-right {
+    content: "Page " counter(page) " / " counter(pages);
+    font: 7.5pt -apple-system, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+    color: #6b7280;
+  }
+}
+
+:root {
+  --ink: #1f2328;
+  --muted: #57606a;
+  --accent: #1f4e79;
+  --rule: #d0d7de;
+  --head-bg: #eef3f8;
+  --zebra: #f8fafc;
+}
+
+html { font-size: 10pt; }
+
+body {
+  font-family: -apple-system, "Helvetica Neue", "Segoe UI", Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--ink);
+  background: #fff;
+  line-height: 1.45;
+  margin: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+h1 {
+  font-size: 19pt;
+  color: var(--accent);
+  margin: 0 0 8pt;
+  padding-bottom: 5pt;
+  border-bottom: 3px solid var(--accent);
+}
+
+h2 {
+  font-size: 13.5pt;
+  color: var(--accent);
+  margin: 16pt 0 6pt;
+  padding-bottom: 2pt;
+  border-bottom: 1px solid var(--rule);
+  break-after: avoid;
+}
+
+h3 {
+  font-size: 11pt;
+  margin: 12pt 0 4pt;
+  break-after: avoid;
+}
+
+/* Every appendix, and the dashboard snapshot, starts on a new page. */
+h2[id^="annexe"],
+h2[id^="suivi"] { break-before: page; }
+
+p { margin: 4pt 0 6pt; }
+ul { margin: 4pt 0 8pt; padding-left: 16pt; }
+li { margin: 2pt 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6pt 0 10pt;
+  font-size: 9pt;
+}
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th {
+  background: var(--head-bg);
+  text-align: left;
+  font-weight: 600;
+}
+th, td {
+  border: 1px solid var(--rule);
+  padding: 3.5pt 5pt;
+  vertical-align: top;
+}
+tbody tr:nth-child(even) td { background: var(--zebra); }
+
+figure {
+  margin: 10pt 0 14pt;
+  text-align: center;
+  break-inside: avoid;
+}
+figure img {
+  max-width: 100%;
+  max-height: 105mm;
+  border: 1px solid var(--rule);
+}
+figcaption {
+  font-size: 8.5pt;
+  color: var(--muted);
+  margin-top: 3pt;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 14pt 0 6pt;
+}
+
+em { color: var(--muted); }
+
+/* Dashboard snapshot (terminal SVG): full width, no height cap. */
+.tableau-de-bord figure img,
+.tableau-de-bord figure svg {
+  max-height: none;
+  width: 100%;
+  height: auto;
+  border: 0;
+}
