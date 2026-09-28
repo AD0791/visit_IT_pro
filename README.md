@@ -17,11 +17,10 @@ and who need to *prove* that everything is reliable, not just fix things.
 > dashboard are in **French** (the first client is a French-speaking notary office). The templates
 > can be customised; see [Customising](#customising).
 
-![The terminal dashboard](https://raw.githubusercontent.com/AD0791/visit_IT_pro/main/docs/dashboard.svg)
+![The terminal dashboard](docs/dashboard.svg)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/AD0791/visit_IT_pro/main/docs/report-first-page.png"
-       alt="First page of a generated report" width="520">
+  <img src="docs/report-first-page.png" alt="First page of a generated report" width="520">
 </p>
 
 Sample outputs from the fictional demo office:
@@ -676,9 +675,11 @@ For each release:
 
 1. Update `version` in `pyproject.toml` and add a section to `CHANGELOG.md`.
 2. Commit, then tag and push: `git tag v0.1.0 && git push origin main v0.1.0`.
-3. The **Publish to PyPI** workflow runs the tests, builds the wheel and sdist, and uploads them.
+3. The **Publish to PyPI** workflow runs the tests, points the README images at the tag's files on
+   GitHub (PyPI can't resolve the relative `docs/` paths), builds the wheel and sdist, and uploads them.
 
-To publish by hand instead: `uv build`, then `uv publish --token <your PyPI token>`. You can rehearse on
+To publish by hand instead: `uv build`, then `uv publish --token <your PyPI token>` (the README images
+will be missing on PyPI unless you apply the workflow's `sed` rewrite first). You can rehearse on
 [TestPyPI](https://test.pypi.org) with `uv publish --publish-url https://test.pypi.org/legacy/ --token …`.
 
 ## License

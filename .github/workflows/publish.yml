@@ -21,5 +21,8 @@ jobs:
       - uses: astral-sh/setup-uv@v10.2.0  # setup-uv publishes no floating major tag
       - run: uv sync --locked
       - run: uv run pytest
+      # The README shows its images from docs/ with relative paths, which PyPI can't resolve:
+      # point them at this tag's copies on GitHub before building.
+      - run: sed -E -i "s#(\]\(|src=\")docs/#\1https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/docs/#g" README.md
       - run: uv build
       - run: uv publish --trusted-publishing always
