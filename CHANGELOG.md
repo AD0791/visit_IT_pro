@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] — 2026-09-27
+## [0.1.0] — 2026-10-01
 
 First release.
 
@@ -24,3 +24,5 @@ First release.
   or HTML and inserted into the report as a snapshot.
 - `visit-it-pro templates`: copy the built-in templates into the workspace to customise them.
 - Demo workspace (`examples/demo`, fictional office) used by the tests and the README.
+
+[0.1.0]: https://github.com/AD0791/visit_IT_pro/releases/tag/v0.1.0

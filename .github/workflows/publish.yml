@@ -8,21 +8,49 @@ on:
     tags: ["v*"]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0  # setup-uv publishes no floating major tag
+      - run: uv sync --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run pytest
+      # A PyPI version can never be re-uploaded: refuse a tag that doesn't match pyproject.toml.
+      - name: Check the tag matches the package version
+        run: |
+          version=$(uv run python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version $version in pyproject.toml"
+            exit 1
+          fi
+      # The README shows its images from docs/ with relative paths, which PyPI can't resolve:
+      # point them at this tag's copies on GitHub before building.
+      - run: sed -E -i "s#(\]\(|src=\")docs/#\1https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/docs/#g" README.md
+      - run: uv build
+      - name: Smoke-test the built wheel
+        run: uv run --isolated --no-project --with dist/*.whl visit-it-pro --version
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  # Separate job: only this one can request a PyPI token, and it runs no project code.
   publish:
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/project/visit-it-pro/
     permissions:
       id-token: write
-      contents: read
     steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.2.0  # setup-uv publishes no floating major tag
-      - run: uv sync --locked
-      - run: uv run pytest
-      # The README shows its images from docs/ with relative paths, which PyPI can't resolve:
-      # point them at this tag's copies on GitHub before building.
-      - run: sed -E -i "s#(\]\(|src=\")docs/#\1https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/docs/#g" README.md
-      - run: uv build
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: astral-sh/setup-uv@v10.2.0
       - run: uv publish --trusted-publishing always

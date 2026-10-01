@@ -100,10 +100,10 @@ The recommended way is [uv](https://docs.astral.sh/uv/), which installs the `vis
 in its own isolated environment:
 
 ```bash
-# From PyPI (once released)
+# From PyPI
 uv tool install visit-it-pro
 
-# Straight from GitHub (works today)
+# Latest development version, straight from GitHub
 uv tool install git+https://github.com/AD0791/visit_IT_pro
 
 # Alternatives
@@ -663,20 +663,28 @@ sips -s format png -Z 1100 examples/demo/visits/2026-10-02/rapport-2026-10-02.pd
 Releases go to PyPI through GitHub Actions with
 [trusted publishing](https://docs.pypi.org/trusted-publishers/): no password or token is stored anywhere.
 
-One-time setup:
+One-time setup (already done for this repository, kept for reference and forks):
 
 1. Create an account on [pypi.org](https://pypi.org) and enable two-factor authentication.
 2. In your PyPI account, open **Publishing** and add a *pending publisher*: PyPI project name
    `visit-it-pro`, owner `AD0791`, repository `visit_IT_pro`, workflow `publish.yml`, environment `pypi`.
-3. In the GitHub repository, **Settings → Environments → New environment** named `pypi` (optionally
-   require your approval before each release).
+3. In the GitHub repository, **Settings → Environments → New environment** named `pypi`. Under
+   **Deployment branches and tags**, allow only tags matching `v*`. You can also require your
+   approval before each release.
 
 For each release:
 
 1. Update `version` in `pyproject.toml` and add a section to `CHANGELOG.md`.
-2. Commit, then tag and push: `git tag v0.1.0 && git push origin main v0.1.0`.
-3. The **Publish to PyPI** workflow runs the tests, points the README images at the tag's files on
-   GitHub (PyPI can't resolve the relative `docs/` paths), builds the wheel and sdist, and uploads them.
+2. Commit and push `main`, wait for CI to pass, then tag and push the tag:
+   `git tag v0.2.0 && git push origin v0.2.0`.
+3. The **Publish to PyPI** workflow:
+   - runs the linters and the tests;
+   - stops if the tag doesn't match `version` in `pyproject.toml` (a PyPI version can never be
+     re-uploaded, so a mismatched tag must not publish anything);
+   - points the README images at the tag's files on GitHub, because PyPI can't resolve the relative
+     `docs/` paths;
+   - builds the wheel and sdist and checks that the built command starts;
+   - uploads them from a separate job, the only one allowed to request a PyPI token.
 
 To publish by hand instead: `uv build`, then `uv publish --token <your PyPI token>` (the README images
 will be missing on PyPI unless you apply the workflow's `sed` rewrite first). You can rehearse on
